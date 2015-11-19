@@ -1,0 +1,144 @@
+=pod 
+
+=head1 NAME
+
+diseaseview::mlst::mlst - tool for querying MLST repositories
+
+
+=head1 SYNOPSIS
+
+
+=head1 DEPENDENCIES
+	
+	
+	
+=head1 DESCRIPTION
+
+=head2 Description
+
+=head2 Routines
+
+=item new
+
+instantiates a new mlst object.
+
+
+=item matchDatabases(searchString)
+
+an MLST database is the set of sequence type profiles that have been registered 
+for a particular genus, species, or strain. this method retrieves the appropriate 
+database(s) for the given searchString (usually a genome or partial genome name).
+
+returns an array reference containing the unix-style id strings for all 
+appropriate databases. often this is a single value (e.g., vcholerae for 
+genome Vibrio cholerae), but this is not always the case (e.g., E. coli has 
+multiple databases with different loci for each). the return array is empty if 
+no appropriate databases can be found.
+
+
+
+=item getProfile(databaseId, st)
+
+
+
+=item getAvailableDatabases
+
+queries the target MLST repository for the available databases.
+
+returns a hash reference containing database descriptions (generally, the 
+human-readable name; e.g., Vibrio cholerae), keyed by the repository's 
+unix-style id strings (e.g., vcholerae).
+
+
+
+=item getLoci(databaseId)
+
+every database consists of a small number of conserved gene loci. the sequences 
+of the alleles at these loci determine the MLST profile. this method retrieves 
+the locus names, min and max lengths, and allele counts for the given database.
+
+returns a hash reference, keyed by locus name, of min length, max length, 
+whether or not the length can vary between alleles, and the total allele count 
+at this locus.
+
+
+
+=item getAllele(databaseId, locus, alleleId)
+
+every unique DNA sequence at a particular locus is called an allele. each allele at 
+an MLST locus is given a unique numeric id, and these numeric ids comprise the 
+MLST profile for a given genome. this method retrieves the sequence of the given 
+alleleId at the given locus in the given database.
+
+returns the allele sequence as a string.
+
+
+
+=item findMatches(databaseId, locus, seq, max)
+
+finds max matches (1) to the given seq in the given database.
+
+returns the matches as an array ref of hash refs, each containing:
+	database [id]
+	locus
+	allele [id]
+	sequence [of allele]
+	[no of] mismatches
+	[no of] gaps
+	length [of alignment]
+
+
+
+=item matchToAllele(databaseId, locus, seq)
+
+retrieves the allele(s) for the given locus that represents the best match to the 
+given seq.
+
+returns the alleles as an array ref of hash refs, each containing:
+	database [id]
+	locus
+	allele [id]
+	sequence [of allele]
+	[no of] diffs
+	substitutions [array ref of hash refs containing position, allele_nuc, seq_nuc]
+
+substitutions is an array ref of hashes containing position of the change, the 
+base in the allele (allele_nuc), and the base in the input sequence (seq_nuc). 
+a dash '-' indicates a gap.
+
+substitutions field is optional for exact matches.
+
+
+
+=item getSTs(databaseId, profile)
+
+a sequence type (ST) is a unique combination of alleles at the loci for a given 
+database. this method retrieves all of the STs that match the given profile. the 
+profile is a hash of allele ids keyed by locus. it can include all of the loci 
+that define a given MLST, or only a subset (min of 1).
+
+returns a hash ref, where each key is the ST and each value is the profile hash.
+
+
+
+=item getProfile(databaseId, profile)
+
+a profile is the allele ids that define a unique sequence type (ST). this method 
+retrieves the profile for a given ST.
+
+returns a hash ref of allele ids, keys by locus (gene symbol).
+
+
+
+=head1 AUTHOR AND COPYRIGHT
+
+Timothy Driscoll <driscoll451@gmail.com>
+
+
+=head1 LICENSE
+
+This module is licensed under the same terms as Perl itself.
+
+
+=cut
+
