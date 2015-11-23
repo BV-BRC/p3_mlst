@@ -203,6 +203,13 @@ sub parseMLSTxml {
 				next;
 			}
 
+			my($first_id) = $test =~ /^>(\S+)[-_]\d+$/m;
+			if ($locusName ne $first_id)
+			{
+			    warn "Fixing locusName to match fasta: $locusName != $first_id\n";
+			    system("cp", "$seqdir/$profileId/$locusName.fna", "$seqdir/$profileId/$first_id.fna");
+			    $locusName = $first_id;
+			}
 			# calc the min and max lengths and total count for each seq at this locus
 			my $stats = calcLocusStats("$seqdir/$profileId/$locusName.fna");
 			push @locusStats, "$locusName|$stats";
