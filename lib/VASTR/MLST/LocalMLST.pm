@@ -134,16 +134,26 @@ sub getAllele {
 	
 	my $seq="";
 	my $capture=0;
-	open my $fh, "$self->{CONN}/seq/$databaseId/$locus.fna" or return $self->handleError("getAllele", 5, "$self->{CONN}/seq/$databaseId/$locus.fna: $!");
+	my $file = "$self->{CONN}/seq/$databaseId/$locus.fna";
+	# print STDERR "file=$file\n";
+	open my $fh, $file or return $self->handleError("getAllele", 5, "$self->{CONN}/seq/$databaseId/$locus.fna: $!");
 	while (<$fh>) {
-		chomp;
-		my $line=$_;
-		if ($line =~ /^>/) {
-			last unless $seq eq "";
-			$capture=1 if $line eq ">${locus}_${alleleId}" or $line eq ">${locus}-${alleleId}";
-		} elsif ($capture) {
-			$seq .= $line;
+	    chomp;
+	    my $line=$_;
+	    if ($line =~ /^>/) {
+		last unless $seq eq "";
+		if ($line eq ">${locus}_${alleleId}"
+		    or $line eq ">${locus}-${alleleId}"
+		    # the following was from when we had mismatches in the locus
+		    # tag in the metadata. Fixed by fixing the update.
+		    # or $line =~ /^>[A-Za-z]+_$locus[-_]$alleleId/
+		   )
+		{
+		    $capture=1;
 		}
+	    } elsif ($capture) {
+		$seq .= $line;
+	    }
 	}
 	close $fh;
 	return $seq;

@@ -155,11 +155,12 @@ foreach my $db (@dbs) {
 		
 		# use the sequence of allele 1 at each locus to extract from genome
 		my $locusSeq = $mlst->getAllele($db, $locusName, 1);
-#print "$db: $locusName: $locusSeq\n";
+#print STDERR "$db: $locusName: $locusSeq\n";
 #next;
 
 		# find closest sequence match to MLST allele 1 in the input genome (query)
 		($stdout, $stderr) = capture { system( "echo \">mlst|$db|locus|$locusName|   ${locusName}_1   [$org]\n$locusSeq\n\" | blastn -task megablast -evalue .000001 -max_target_seqs 1 -outfmt 11 -db $tmp/$query -query - -out $tmp/$query-$locusName.asn -num_threads $threads" ) };
+		# print STDERR "XXX $stderr\n'$locusSeq'\n";
 		my $result = capture { system( "blast_formatter -archive $tmp/$query-$locusName.asn -outfmt \"6 sseqid sstart send qstart qend qlen length sseq\"" ) };
 		chomp $result;
 		
