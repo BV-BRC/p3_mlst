@@ -40,14 +40,14 @@ my $threads=$opt->threads;
 my $org = $opt->org;
 my $printAllAlignments = $opt->alignments;
 
-my $mlst = new VASTR::MLST::LocalMLST;
+my $tmp = File::Temp::tempdir(CLEANUP => 1);
+my $mlst = new VASTR::MLST::LocalMLST($tmp);
 $mlst->setCONN($dbdir) if (defined $dbdir && -d $dbdir);
 
 # set up tmp dir and sequence file
 my $ext="fna";
 my $query="query";
 
-my $tmp = File::Temp::tempdir(CLEANUP => 1);
 
 # get the MLST databases to query
 my @dbs=split /,/, $dblist;
