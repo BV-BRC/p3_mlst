@@ -29,14 +29,14 @@ deploy: deploy-client deploy-service
 deploy-all: deploy-client deploy-service
 deploy-client: build-libs deploy-docs deploy-libs deploy-scripts 
 
-deploy-service: deploy-dir deploy-monit deploy-libs deploy-service-scripts
+deploy-service: deploy-dir deploy-monit deploy-libs deploy-service-scripts-local
 	$(TPAGE) $(TPAGE_ARGS) service/start_service.tt > $(TARGET)/services/$(SERVICE)/start_service
 	chmod +x $(TARGET)/services/$(SERVICE)/start_service
 	$(TPAGE) $(TPAGE_ARGS) service/stop_service.tt > $(TARGET)/services/$(SERVICE)/stop_service
 	chmod +x $(TARGET)/services/$(SERVICE)/stop_service
 	rsync -arv app_specs $(TARGET)/services/$(SERVICE)/.
 
-deploy-service-scripts:
+deploy-service-scripts-local:
 	export KB_TOP=$(TARGET); \
 	export KB_RUNTIME=$(DEPLOY_RUNTIME); \
 	export KB_PERL_PATH=$(TARGET)/lib ; \
