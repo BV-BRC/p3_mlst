@@ -14,3 +14,5 @@ This module is a component of the BV-BRC build system. It is designed to fit int
 the components of the BV-BRC. More documentation is available [here](https://github.com/BV-BRC/dev_container/tree/master/README.md).
 
 The script [`assign_st_to_genome`](scripts/assign_genomes_to_dbs.pl) is invoked during the execution of the BV-BRC genome annotation pipeline. The output of the script is parsed and used to assign a MLST sequence type for the genome being analyzed.
+
+The libraries used are downloaded based on the index data from http://pubmlst.org/data/dbases.xml.
